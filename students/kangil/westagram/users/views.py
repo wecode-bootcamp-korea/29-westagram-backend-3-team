@@ -21,16 +21,15 @@ class SignUpView(View):
                 return JsonResponse({'Message': 'KEY_ERROR'}, status = 400)
                 
             if not EMAIL_VALIDATION.match(email):
-                return JsonResponse({'Message' : 'Invalid Email'}, status = 404)
+                return JsonResponse({'Message' : 'Invalid Email'}, status = 400)
             
             if not PASSWORD_VALIDATION.match(password):
-                return JsonResponse({'Message' : 'Invalid Password'}, status = 404)
+                return JsonResponse({'Message' : 'Invalid Password'}, status = 400)
             
             if User.objects.filter(email = email).exists():
                 return JsonResponse({'Message' : 'Already Exist Email'}, status = 400)
             
-            user_info = User.objects.create(
-                
+            User.objects.create(  
                 email          = email,
                 password       = password,
                 name           = name,
@@ -40,20 +39,3 @@ class SignUpView(View):
         
         except KeyError:
             return JsonResponse({'Message': 'FAILED'}, status = 400)
-    
-    def get(self, request):
-        users     = User.objects.all()
-        user_list = []
-        
-        for user in users:
-            user_info = {
-                'name'         : user.name,
-                'email'        : user.email,
-                'password'     : user.password,
-                'phone_number' : user.phone_number,
-                'created_at'   : user.created_at,
-                'updated_at'   : user.updated_at,
-            }
-            user_list.append(user_info)
-            
-        return JsonResponse({'users' : user_list}, status = 200)
