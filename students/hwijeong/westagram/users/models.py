@@ -1,9 +1,11 @@
 from django.db import models
 
-class user(models.Model):
+from .validators import isEmailValid, isPasswordValid, checkEmailAndPassword
+
+class User(models.Model):
     name = models.CharField(max_length=30)
-    email = models.EmailField(max_length=300, unique=True)
-    password = models.CharField(max_length=200)
+    email = models.EmailField(max_length=255, unique=True, validators=[isEmailValid, checkEmailAndPassword])
+    password = models.CharField(max_length=200, validators=[isPasswordValid, checkEmailAndPassword])
     contact = models.CharField(max_length=30, unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
