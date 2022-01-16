@@ -20,7 +20,6 @@ def isPasswordValid(password):
 
 def checkDuplicated(email, contact):
     users = User.objects.all()
-    print(users)
     for user in users:
         if (user.email == email or user.contact == contact):
             raise ValidationError("Error: Duplicated email or contact")

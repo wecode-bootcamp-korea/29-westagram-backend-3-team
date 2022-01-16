@@ -15,7 +15,7 @@ class RegisterView(View):
 
     def post(self, request):   
         data = json.loads(request.body)
-
+        
         name     = data["name"]
         email    = data["email"]
         password = data["password"]
