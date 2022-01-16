@@ -1,45 +1,43 @@
+from curses import KEY_SOPTIONS
 import json
 
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.http.response import HttpResponse
 from django.views import View
+from django.core.exceptions import ValidationError
+from django.db.utils import IntegrityError
 
 from .models import User
-from .validators import isEmailValid, isPasswordValid, checkEmailAndPassword
+from .validators import isEmailValid, isPasswordValid, checkEmailAndPassword, checkDuplicated
 
 class RegisterView(View):
 
     def post(self, request):   
         data = json.loads(request.body)
-        statusMessage = JsonResponse({"message": "SUCCESS"}, status=201)
 
         try:
-            isEmailValid(data["email"])
-        except:
-            statusMessage = JsonResponse({"message": "FAILURE > Please check email format."}, status=400)
-            return statusMessage
+            name     = data["name"]
+            email    = data["email"]
+            password = data["password"]
+            contact  = data["contact"]
 
-        try:
-            checkEmailAndPassword(data["email"], data["password"])
-        except:
-            statusMessage = JsonResponse({"message": "KEY_ERROR > Please input email and password."}, status=400)
-            return statusMessage
-
-        try:
-            isPasswordValid(data["password"])
-        except:
-            statusMessage = JsonResponse({"message": "FAILURE > Password must be at least 8 characters with 1 upper case letter and 1 number"}, status=400)
-            return statusMessage
-
-        try:            
+            checkDuplicated(name, contact)
+            isEmailValid(email)
+            isPasswordValid(password)
+            checkEmailAndPassword(email, password)
+       
             user = User.objects.create(
-                name = data["name"],
-                email = data["email"],
+                name     = data["name"],
+                email    = data["email"],
                 password = data["password"],
-                contact = data["contact"]
+                contact  = data["contact"],
+                note     = data["note"]
             )
-        except:
-            statusMessage = JsonResponse({"message": "FAILURE > Already registerd email or contact."}, status=400)
-
-        return statusMessage
+            return JsonResponse({"message": "SUCCESS"}, status=201)
+        except KeyError:
+            return JsonResponse({'message': "Please check the input, all values needed"})
+        except IntegrityError:
+            return JsonResponse({'message': "Please check the input, it might be duplicated"})
+        except ValidationError as e:
+            return JsonResponse({'message': f"{e.message}"})
