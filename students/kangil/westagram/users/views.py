@@ -16,10 +16,7 @@ class SignUpView(View):
             password            = user_data['password']
             name                = user_data['name'],
             phone_number        = user_data['phone_number'],
-            
-            if email == "" or password == "":
-                return JsonResponse({'Message': 'KEY_ERROR'}, status = 400)
-                
+
             if not EMAIL_VALIDATION.match(email):
                 return JsonResponse({'Message' : 'Invalid Email'}, status = 400)
             
