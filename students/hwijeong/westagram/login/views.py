@@ -19,10 +19,10 @@ class LoginView(View):
             userValidation = User.objects.filter(email=email, password=password).exists()
 
             if not userValidation:
-                raise ValidationError({'message': "Please check email or password"})
+                raise ValidationError("INVALID_USER")
     
             return JsonResponse({'message': "SUCCESS"}, status=200)
         except KeyError:
             return JsonResponse({'message': "KEY_ERROR"}, status=400)
-        except ValidationError:
-            return JsonResponse({'message': "INVALID_USER"}, status=401)
+        except ValidationError as e:
+            return JsonResponse({'message': f"{e.message}"}, status=401)
