@@ -1,4 +1,3 @@
-from curses import KEY_SOPTIONS
 import json
 
 from django.shortcuts import render
@@ -9,7 +8,7 @@ from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 
 from .models import User
-from .validators import isEmailValid, isPasswordValid, checkEmailAndPassword, checkDuplicated
+from .validators import isEmailValid, isPasswordValid, checkDuplicated
 
 class RegisterView(View):
 
@@ -25,7 +24,6 @@ class RegisterView(View):
             checkDuplicated(name, contact)
             isEmailValid(email)
             isPasswordValid(password)
-            checkEmailAndPassword(email, password)
        
             user = User.objects.create(
                 name     = data["name"],
