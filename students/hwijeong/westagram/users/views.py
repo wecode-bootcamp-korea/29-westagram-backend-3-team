@@ -8,7 +8,7 @@ from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 
 from .models import User
-from .validators import isEmailValid, isPasswordValid, checkDuplicated
+from .validators import isEmailValid, isPasswordValid
 
 class RegisterView(View):
 
@@ -20,17 +20,17 @@ class RegisterView(View):
             email    = data["email"]
             password = data["password"]
             contact  = data["contact"]
+            note     = data["note"]
 
-            checkDuplicated(name, contact)
             isEmailValid(email)
             isPasswordValid(password)
        
             user = User.objects.create(
-                name     = data["name"],
-                email    = data["email"],
-                password = data["password"],
-                contact  = data["contact"],
-                note     = data["note"]
+                name     = name,
+                email    = email,
+                password = password,
+                contact  = contact,
+                note     = note
             )
             return JsonResponse({"message": "SUCCESS"}, status=201)
         except KeyError:
