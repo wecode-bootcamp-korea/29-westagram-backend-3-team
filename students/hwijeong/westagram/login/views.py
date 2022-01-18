@@ -16,9 +16,9 @@ class LoginView(View):
             email     = data["email"] 
             password  = data["password"]
 
-            userValidation = User.objects.filter(email=email, password=password).exists()
+            is_user_valid = User.objects.filter(email=email, password=password).exists()
 
-            if not userValidation:
+            if not is_user_valid:
                 raise ValidationError("INVALID_USER")
     
             return JsonResponse({'message': "SUCCESS"}, status=200)
