@@ -21,7 +21,7 @@ class SignUpView(View):
             contact  = user_data['contact']
             password = password_bcrypt
 
-            REGEX_EMAIL = '^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\.[a-zxA-Z0-9-.]+$'
+            REGEX_EMAIL = '^[a-zA-Z0-9+-_.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
             REGEX_PASSWORD = '^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&.]{8,}$'
             REGEX_PHONE_NUMBER = '\d{3}-\d{3,4}-\d{4}'
 
