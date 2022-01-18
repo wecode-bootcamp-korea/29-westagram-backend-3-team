@@ -24,7 +24,7 @@ class RegisterView(View):
 
             is_email_valid(email)
             is_password_valid(password)
-       
+            
             user = User.objects.create(
                 name     = name,
                 email    = email,
@@ -34,8 +34,8 @@ class RegisterView(View):
             )
             return JsonResponse({"message": "SUCCESS"}, status=201)
         except KeyError:
-            return JsonResponse({'message': "KEY_ERROR"})
+            return JsonResponse({'message': "KEY_ERROR"}, status=400)
         except IntegrityError:
-            return JsonResponse({'message': "INTEGRITY_ERROR"})
+            return JsonResponse({'message': "INTEGRITY_ERROR"}, status=400)
         except ValidationError as e:
-            return JsonResponse({'message': f"{e.message}"})
+            return JsonResponse({'message': f"{e.message}"}, status=401)
