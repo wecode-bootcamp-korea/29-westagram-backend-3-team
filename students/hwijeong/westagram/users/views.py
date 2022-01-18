@@ -26,7 +26,7 @@ class RegisterView(View):
             is_email_valid(email)
             is_password_valid(password)
             
-            hashed_password = bcrypt.hashpwd(password.encode('utf-8'), bcrypt.gensalt())
+            hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
             user = User.objects.create(
                 name     = name,
