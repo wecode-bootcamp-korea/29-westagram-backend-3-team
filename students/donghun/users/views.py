@@ -12,7 +12,6 @@ class SignUpView(View):
         user_data = json.loads(request.body)
 
         try:
-
             encoded_password = user_data['password'].encode('utf-8')
             password_bcrypt = bcrypt.hashpw(encoded_password, bcrypt.gensalt())
 
@@ -34,8 +33,6 @@ class SignUpView(View):
             if User.objects.filter(email = email).exists():
                 return JsonResponse({"messeage" : "ALEADY_EXISTS"},status=400)
 
-
-
             User.objects.create(
                 email    = email,
                 name     = name,
@@ -52,7 +49,6 @@ class SignInView(View):
 
         try:
             user_data = json.loads(request.body)
-
             user_email = user_data['email']
             user_password = user_data['password']
 
