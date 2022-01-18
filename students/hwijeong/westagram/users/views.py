@@ -1,4 +1,5 @@
 import json
+import bcrypt
 
 from django.shortcuts import render
 from django.http import JsonResponse
@@ -25,10 +26,12 @@ class RegisterView(View):
             is_email_valid(email)
             is_password_valid(password)
             
+            hashed_password = bcrypt.hashpwd(password.encode('utf-8'), bcrypt.gensalt())
+
             user = User.objects.create(
                 name     = name,
                 email    = email,
-                password = password,
+                password = hashed_password.decode('utf-8'),
                 contact  = contact,
                 note     = note
             )
