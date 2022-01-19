@@ -1,4 +1,5 @@
 import json
+import bcrypt
 
 from django.shortcuts import render
 from django.http import JsonResponse
@@ -24,18 +25,20 @@ class RegisterView(View):
 
             is_email_valid(email)
             is_password_valid(password)
-       
+            
+            hashed_password = bcrypt.hashpwd(password.encode('utf-8'), bcrypt.gensalt())
+
             user = User.objects.create(
                 name     = name,
                 email    = email,
-                password = password,
+                password = hashed_password.decode('utf-8'),
                 contact  = contact,
                 note     = note
             )
             return JsonResponse({"message": "SUCCESS"}, status=201)
         except KeyError:
-            return JsonResponse({'message': "KEY_ERROR"})
+            return JsonResponse({'message': "KEY_ERROR"}, status=400)
         except IntegrityError:
-            return JsonResponse({'message': "INTEGRITY_ERROR"})
+            return JsonResponse({'message': "INTEGRITY_ERROR"}, status=400)
         except ValidationError as e:
-            return JsonResponse({'message': f"{e.message}"})
+            return JsonResponse({'message': f"{e.message}"}, status=401)
