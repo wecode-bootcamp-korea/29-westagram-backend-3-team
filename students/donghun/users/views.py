@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from django.views import View
 
 from users.models import User
+from my_settings import SECRET_KEY
 
 class SignUpView(View):
     def post(self,request):
@@ -50,12 +51,17 @@ class SignInView(View):
         try:
             user_data = json.loads(request.body)
             user_email = user_data['email']
-            user_password = user_data['password']
 
-            if User.objects.filter(email = user_email, password = user_password).exists():
-                return JsonResponse({"messeage" : "SUCCESS"}, status = 200)
+            if User.objects.filter(email = user_email).exists():
+                password_bcrypt = User.objects.get(email=user_email)
+                check_password = bcrypt.checkpw(user_data['password'].encode('utf-8'), password_bcrypt.password.encode('utf-8'))
+
+                if check_password == True:
+                    return JsonResponse({"messeage": "SUCCESS"}, status=200)
+                else:
+                    return JsonResponse({"messeage": "INVALID_USER"}, status=401)
             else:
-                return JsonResponse({"messeage" : "INVALID_USER"}, status = 401)
+                return JsonResponse({"messeage": "INVALID_USER"}, status=401)
 
         except KeyError:
             return JsonResponse({"messeage" : "KEY_ERROR"}, status=400)
