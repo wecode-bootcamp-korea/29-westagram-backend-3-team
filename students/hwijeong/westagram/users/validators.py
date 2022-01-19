@@ -8,6 +8,6 @@ def is_email_valid(email):
         raise ValidationError("EMAIL_INPUT_ERROR")
 
 def is_password_valid(password):
-    REGEX_PASSWORD = '^(?=.*[\d])(?=.*[A-Z])(?=.*[a-z])(?=.*[@#$])[\w\d@#$]{8,}$'
+    REGEX_PASSWORD = '^(?=.*[\d])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*()])[\w\d!@#$%^&*()]{8,}$'
     if not re.fullmatch(REGEX_PASSWORD, password):
         raise ValidationError("PASSWORD_INPUT_ERROR")

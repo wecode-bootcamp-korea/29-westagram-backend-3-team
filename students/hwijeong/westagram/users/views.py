@@ -15,6 +15,7 @@ class RegisterView(View):
 
     def post(self, request):   
         data = json.loads(request.body)
+        # print(data)
 
         try:
             name     = data["name"]
@@ -39,6 +40,6 @@ class RegisterView(View):
         except KeyError:
             return JsonResponse({'message': "KEY_ERROR"}, status=400)
         except IntegrityError:
-            return JsonResponse({'message': "INTEGRITY_ERROR"}, status=400)
+            return JsonResponse({'message': "DUPLICATED_ERROR"}, status=400)
         except ValidationError as e:
             return JsonResponse({'message': f"{e.message}"}, status=401)
