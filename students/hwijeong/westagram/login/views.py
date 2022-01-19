@@ -9,6 +9,7 @@ from django.views import View
 from django.core.exceptions import ValidationError
 
 from users.models import User
+from my_settings import SECRET_KEY 
 
 class LoginView(View):
     def get(self, request):
@@ -28,16 +29,16 @@ class LoginView(View):
             if not validating_password:
                 raise ValidationError("INVALID_PASSWORD")
 
-            def get_access_token(user_email, email):
-                access_token = jwt.encode({'id': user_email.id}, email, algorithm='HS256')
+            def get_access_token(user_email, SECRET_KEY):
+                access_token = jwt.encode({'id': user_email.id}, SECRET_KEY, algorithm='HS256')
 
-                def decoding_access_token(access_token, email):
-                    payload = jwt.decode(access_token, email, algorithms='HS256')
+                def decoding_access_token(access_token, SECRET_KEY):
+                    payload = jwt.decode(access_token, SECRET_KEY, algorithms='HS256')
                     return payload
                     
-                return decoding_access_token(access_token, email)
+                return decoding_access_token(access_token, SECRET_KEY)
 
-            token = get_access_token(user_email, email)
+            token = get_access_token(user_email, SECRET_KEY)
 
             return JsonResponse({'message': f"SUCCESS, USER TOKEN: {token}"}, status=200)
 
