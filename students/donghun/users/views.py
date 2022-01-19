@@ -43,9 +43,9 @@ class SignUpView(View):
                 contact  = contact,
             )
 
-            return JsonResponse({"message":"success"}, status=201)
+            return JsonResponse({"message" : "success"}, status=201)
         except KeyError:
-            return JsonResponse({"message":"KEY_ERROR"}, status=400)
+            return JsonResponse({"message" : "KEY_ERROR"}, status=400)
 
 class SignInView(View):
     def post(self,request):
@@ -59,13 +59,13 @@ class SignInView(View):
                 check_password  = bcrypt.checkpw(user_data['password'].encode('utf-8'), password_bcrypt.password.encode('utf-8'))
 
                 if check_password == True:
-                    access_token = jwt.encode({"user_id": password_bcrypt.id}, SECRET_KEY, ALGORITHM)
-                    return JsonResponse({"access_token": access_token}, status=200)
+                    access_token = jwt.encode({"user_id" : password_bcrypt.id}, SECRET_KEY, ALGORITHM)
+                    return JsonResponse({"access_token" : access_token}, status=200)
                 else:
-                    return JsonResponse({"messeage": "INVALID_USER"}, status=401)
+                    return JsonResponse({"messeage" : "INVALID_USER"}, status=401)
 
             else:
-                return JsonResponse({"messeage": "INVALID_USER"}, status=401)
+                return JsonResponse({"messeage" : "INVALID_USER"}, status=401)
 
         except KeyError:
             return JsonResponse({"messeage" : "KEY_ERROR"}, status=400)
