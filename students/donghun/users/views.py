@@ -1,22 +1,19 @@
 import json
 import re
 import bcrypt
-
+import jwt
 
 from django.http import JsonResponse
 from django.views import View
+from django.conf import settings
 
 from users.models import User
-from my_settings import SECRET_KEY
 
 class SignUpView(View):
     def post(self,request):
         user_data = json.loads(request.body)
 
         try:
-            encoded_password = user_data['password'].encode('utf-8')
-            password_bcrypt = bcrypt.hashpw(encoded_password, bcrypt.gensalt())
-
             name     = user_data['name']
             email    = user_data['email']
             contact  = user_data['contact']
@@ -43,22 +40,26 @@ class SignUpView(View):
                 contact  = contact,
             )
 
-            return JsonResponse({"message":"success"}, status=201)
+            return JsonResponse({"message" : "success"}, status=201)
         except KeyError:
-            return JsonResponse({"message":"KEY_ERROR"}, status=400)
+            return JsonResponse({"message" : "KEY_ERROR"}, status=400)
 
 class SignInView(View):
     def post(self,request):
 
         try:
-            user_data     = json.loads(request.body)
-            user_email    = user_data['email']
-            user_password = user_data['password']
+            user_data  = json.loads(request.body)
+            user_email = user_data['email']
 
-            if User.objects.filter(email = user_email, password = user_password).exists():
-                return JsonResponse({"messeage" : "SUCCESS"}, status = 200)
-            else:
-                return JsonResponse({"messeage" : "INVALID_USER"}, status = 401)
+            user = User.objects.get(email=user_email)
+
+            if not bcrypt.checkpw(user_data['password'].encode('utf-8'), user.password.encode('utf-8')) :
+                return JsonResponse({"messeage": "INVALID_USER"}, status=401)
+
+            access_token = jwt.encode({"user_id" : user.id}, settings.SECRET_KEY, settings.ALGORITHM)
+            return JsonResponse({"access_token" : access_token}, status=200)
 
         except KeyError:
             return JsonResponse({"messeage" : "KEY_ERROR"}, status=400)
+        except User.DoesNotExist:
+            return JsonResponse({"messeage" : "INVALID_USER"}, status=401)
