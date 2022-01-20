@@ -31,9 +31,6 @@ class LoginView(View):
 
             access_token = jwt.encode({'id': validated_user.id}, SECRET_KEY, algorithm=ALGORITHM)
 
-            def decoding_access_token(access_token, SECRET_KEY):
-                payload = jwt.decode(access_token, SECRET_KEY, algorithms=ALGORITHM)
-                return payload
 
             user_information = decoding_access_token(access_token, SECRET_KEY)
 
