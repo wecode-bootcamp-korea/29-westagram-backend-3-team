@@ -5,18 +5,15 @@ import jwt
 
 from django.http import JsonResponse
 from django.views import View
+from django.conf import settings
 
 from users.models import User
-from my_settings import SECRET_KEY,ALGORITHM
 
 class SignUpView(View):
     def post(self,request):
         user_data = json.loads(request.body)
 
         try:
-            encoded_password = user_data['password'].encode('utf-8')
-            password_bcrypt = bcrypt.hashpw(encoded_password, bcrypt.gensalt())
-
             name     = user_data['name']
             email    = user_data['email']
             contact  = user_data['contact']
@@ -60,7 +57,7 @@ class SignInView(View):
             user = User.objects.get(email=user_email)
 
             if bcrypt.checkpw(user_data['password'].encode('utf-8'), user.password.encode('utf-8')) :
-                access_token = jwt.encode({"user_id" : user.id}, SECRET_KEY, ALGORITHM)
+                access_token = jwt.encode({"user_id" : user.id}, settings.SECRET_KEY, settings.ALGORITHM)
                 return JsonResponse({"access_token" : access_token}, status=200)
 
             return JsonResponse({"messeage" : "INVALID_USER"}, status=401)
